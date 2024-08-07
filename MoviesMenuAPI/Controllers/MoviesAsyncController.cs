@@ -13,7 +13,7 @@ public class MoviesAsyncController : ControllerBase
     private readonly MyBootcampDbContext _dbContext = new();
     private readonly MovieService _movieService = new();
 
-    // GET: api/movies
+    // GET: api/movies-async
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -21,17 +21,17 @@ public class MoviesAsyncController : ControllerBase
         return Ok(moviesToReturn);
     }
 
-    // GET api/movies/1
+    // GET api/movies-async/1
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var movieItem = await _dbContext.Movies.FindAsync(id);
+        var movieItem = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
         if (movieItem == null)
             return NotFound();
         return Ok(movieItem);
     }
 
-    // POST api/movies
+    // POST api/movies-async
     [HttpPost]
     public async Task<IActionResult> Post(Movie movie)
     {
@@ -45,11 +45,11 @@ public class MoviesAsyncController : ControllerBase
 
     }
 
-    // PUT api/movies/1
+    // PUT api/movies-async/1
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Movie updatedMovie)
     {
-        var movieToUpdate = await _dbContext.Movies.FindAsync(id);
+        var movieToUpdate = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
         if (movieToUpdate == null)
             return NotFound($"Invalid Movie Id");
 
@@ -64,11 +64,11 @@ public class MoviesAsyncController : ControllerBase
         return NoContent();
     }
 
-    // DELETE api/movies/1
+    // DELETE api/movies-async/1
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var movie = await _dbContext.Movies.FindAsync(id);
+        var movie = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null) return BadRequest(string.Empty);
 
         _dbContext.Movies.Remove(movie);

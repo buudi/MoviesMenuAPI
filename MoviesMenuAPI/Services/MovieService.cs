@@ -54,7 +54,7 @@ internal class MovieService
 
     public string RemoveMovie(int id)
     {
-        var movie = _dbContext.Movies.Find(id);
+        var movie = _dbContext.Movies.FirstOrDefault(m => m.Id == id);
         if (movie != null)
         {
             _dbContext.Movies.Remove(movie);
