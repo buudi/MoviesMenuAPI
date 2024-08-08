@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using MoviesMenuAPI.Contexts;
 using MoviesMenuAPI.Services;
 

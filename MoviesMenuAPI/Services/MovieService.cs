@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesMenuAPI.Contexts;
 using MoviesMenuAPI.Models;
-using System.Text;
 
 namespace MoviesMenuAPI.Services;
 
