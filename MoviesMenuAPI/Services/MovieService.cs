@@ -3,7 +3,7 @@ using MoviesMenuAPI.Models;
 
 namespace MoviesMenuAPI.Services;
 
-internal class MovieService
+public class MovieService
 {
     private MyBootcampDbContext _dbContext = new();
     private List<Movie> _movies = [];

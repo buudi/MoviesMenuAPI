@@ -3,7 +3,7 @@ using MoviesMenuAPI.Models;
 
 namespace MoviesMenuAPI.Contexts;
 
-internal class MyBootcampDbContext : DbContext
+public class MyBootcampDbContext : DbContext
 {
     public DbSet<Movie> Movies { get; set; }
 

@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using MoviesMenuAPI.Contexts;
+using MoviesMenuAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MyBootcampDbContext>();
+builder.Services.AddScoped<MovieService>();
 
 var app = builder.Build();
 

@@ -8,10 +8,10 @@ namespace MoviesMenuAPI.Controllers;
 
 [Route("api/movies")]
 [ApiController]
-public class MoviesController : ControllerBase
+public class MoviesController(MyBootcampDbContext dbContext, MovieService movieService) : ControllerBase
 {
-    private readonly MyBootcampDbContext _dbContext = new();
-    private readonly MovieService _movieService = new();
+    private readonly MyBootcampDbContext _dbContext = dbContext;
+    private readonly MovieService _movieService = movieService;
 
     // GET: api/movies
     [HttpGet]
