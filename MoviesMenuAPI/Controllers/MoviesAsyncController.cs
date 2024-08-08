@@ -8,10 +8,9 @@ namespace MoviesMenuAPI.Controllers;
 
 [Route("api/movies-async")]
 [ApiController]
-public class MoviesAsyncController : ControllerBase
+public class MoviesAsyncController(MyBootcampDbContext dbContext) : ControllerBase
 {
-    private readonly MyBootcampDbContext _dbContext = new();
-    private readonly MovieService _movieService = new();
+    private readonly MyBootcampDbContext _dbContext = dbContext;
 
     // GET: api/movies-async
     [HttpGet]
