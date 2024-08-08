@@ -8,10 +8,10 @@ public class MovieService(MyBootcampDbContext dbContext)
 {
     private MyBootcampDbContext _dbContext = dbContext;
 
-    public Movie? GetMovieById(int id) => _dbContext.Movies.FirstOrDefault(m => m.Id == id);
+    public Movie? GetMovieById(int id) => _dbContext.Movies.AsNoTracking().FirstOrDefault(m => m.Id == id);
     public async Task<Movie?> GetMovieByIdAsync(int id)
     {
-        return await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
+        return await _dbContext.Movies.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
     }
 
     // adding AsNoTracking() will make EF Core not track this call (we dont need tracking here since listing all movies is read only, i.e. we don't need to modify it) this improves performance.
