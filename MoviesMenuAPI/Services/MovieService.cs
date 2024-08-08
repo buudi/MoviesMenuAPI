@@ -4,9 +4,9 @@ using MoviesMenuAPI.Models;
 
 namespace MoviesMenuAPI.Services;
 
-public class MovieService
+public class MovieService(MyBootcampDbContext dbContext)
 {
-    private MyBootcampDbContext _dbContext = new();
+    private MyBootcampDbContext _dbContext = dbContext;
 
     public Movie? GetMovieById(int id) => _dbContext.Movies.FirstOrDefault(m => m.Id == id);
 

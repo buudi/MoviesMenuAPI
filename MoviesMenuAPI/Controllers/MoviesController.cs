@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MoviesMenuAPI.Contexts;
 using MoviesMenuAPI.Models;
 using MoviesMenuAPI.Services;
 
