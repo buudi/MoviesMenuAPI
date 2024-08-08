@@ -8,15 +8,18 @@ namespace MoviesMenuAPI.Controllers;
 
 [Route("api/movies-async")]
 [ApiController]
-public class MoviesAsyncController(MyBootcampDbContext dbContext) : ControllerBase
+public class MoviesAsyncController(MyBootcampDbContext dbContext, MovieService movieService) : ControllerBase
 {
     private readonly MyBootcampDbContext _dbContext = dbContext;
+    private readonly MovieService _movieService = movieService;
 
     // GET: api/movies-async
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var moviesToReturn = await _dbContext.Movies.ToListAsync();
+        //var moviesToReturn = await _dbContext.Movies.ToListAsync();
+        var moviesToReturn = await _movieService.ListAllMoviesAsync();
+
         return Ok(moviesToReturn);
     }
 
@@ -37,11 +40,12 @@ public class MoviesAsyncController(MyBootcampDbContext dbContext) : ControllerBa
         if (movie == null)
             return BadRequest("Please Enter Valid Information");
 
-        await _dbContext.Movies.AddAsync(movie);
-        await _dbContext.SaveChangesAsync();
+        //await _dbContext.Movies.AddAsync(movie);
+        //await _dbContext.SaveChangesAsync();
+
+        await _movieService.AddMovieAsync(movie);
 
         return CreatedAtAction(nameof(Get), new { id = movie.Id }, movie);
-
     }
 
     // PUT api/movies-async/1
