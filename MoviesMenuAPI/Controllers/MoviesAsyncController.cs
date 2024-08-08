@@ -8,9 +8,9 @@ namespace MoviesMenuAPI.Controllers;
 
 [Route("api/movies-async")]
 [ApiController]
-public class MoviesAsyncController(MyBootcampDbContext dbContext, MovieService movieService) : ControllerBase
+public class MoviesAsyncController(MovieService movieService) : ControllerBase
 {
-    private readonly MyBootcampDbContext _dbContext = dbContext;
+
     private readonly MovieService _movieService = movieService;
 
     // GET: api/movies-async
@@ -27,7 +27,7 @@ public class MoviesAsyncController(MyBootcampDbContext dbContext, MovieService m
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var movieItem = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
+        var movieItem = await _movieService.GetMovieByIdAsync(id);
         if (movieItem == null)
             return NotFound();
         return Ok(movieItem);
@@ -52,31 +52,36 @@ public class MoviesAsyncController(MyBootcampDbContext dbContext, MovieService m
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Movie updatedMovie)
     {
-        var movieToUpdate = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
+        //var movieToUpdate = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
+
+        var movieToUpdate = await _movieService.GetMovieByIdAsync(id);
         if (movieToUpdate == null)
             return NotFound($"Invalid Movie Id");
 
-        updatedMovie.Id = id;
-        movieToUpdate.Title = updatedMovie.Title;
-        movieToUpdate.Director = updatedMovie.Director;
-        movieToUpdate.ReleaseYear = updatedMovie.ReleaseYear;
-        movieToUpdate.Genre = updatedMovie.Genre;
-        movieToUpdate.Price = updatedMovie.Price;
-
-        await _dbContext.SaveChangesAsync();
+        await _movieService.ModifyMovieAsync(id, updatedMovie);
         return NoContent();
+
+        //updatedMovie.Id = id;
+        //movieToUpdate.Title = updatedMovie.Title;
+        //movieToUpdate.Director = updatedMovie.Director;
+        //movieToUpdate.ReleaseYear = updatedMovie.ReleaseYear;
+        //movieToUpdate.Genre = updatedMovie.Genre;
+        //movieToUpdate.Price = updatedMovie.Price;
+        //await _dbContext.SaveChangesAsync();
     }
 
     // DELETE api/movies-async/1
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var movie = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
-        if (movie == null) return BadRequest(string.Empty);
+        var movieToDelete = await _movieService.GetMovieByIdAsync(id);
+        if (movieToDelete == null) return BadRequest(string.Empty);
 
-        _dbContext.Movies.Remove(movie);
-        await _dbContext.SaveChangesAsync();
+        await _movieService.RemoveMovieAsync(movieToDelete);
 
-        return Ok($"Movie: {movie.Title} is deleted from the database successfully");
+        //_dbContext.Movies.Remove(movie);
+        //await _dbContext.SaveChangesAsync();`
+
+        return Ok($"Movie: {movieToDelete.Title} is deleted from the database successfully");
     }
 }

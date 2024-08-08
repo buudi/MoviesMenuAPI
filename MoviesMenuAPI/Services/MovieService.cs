@@ -55,9 +55,9 @@ public class MovieService(MyBootcampDbContext dbContext)
         return $"{updatedMovie.Title} modified in the database successfully!";
     }
 
-    public async Task<string> ModifyMovieAsync(Movie updatedMovie)
+    public async Task ModifyMovieAsync(int id, Movie updatedMovie)
     {
-        var movieEntity = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == updatedMovie.Id);
+        var movieEntity = await GetMovieByIdAsync(id);
 
         if (movieEntity != null)
         {
@@ -69,7 +69,6 @@ public class MovieService(MyBootcampDbContext dbContext)
 
             await _dbContext.SaveChangesAsync();
         }
-        return $"{updatedMovie.Title} modified in the database successfully!";
     }
 
     public string RemoveMovie(Movie movieToDelete)
@@ -79,6 +78,14 @@ public class MovieService(MyBootcampDbContext dbContext)
 
         return $"Movie: {movieToDelete.Title} is removed from the database successfully";
     }
+
+    public async Task<string> RemoveMovieAsync(Movie movieToDelete)
+    {
+        _dbContext.Movies.Remove(movieToDelete);
+        await _dbContext.SaveChangesAsync();
+
+        return $"Movie: {movieToDelete.Title} is removed from the database successfully";
+    }   
 
     public bool CheckMovieExists(int? id) => _dbContext.Movies.Any(m => m.Id == id);
 }
