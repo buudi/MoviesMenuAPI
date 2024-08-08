@@ -85,6 +85,4 @@ public class MovieService(MyBootcampDbContext dbContext)
 
         return $"Movie: {movieToDelete.Title} is removed from the database successfully";
     }   
-
-    public bool CheckMovieExists(int? id) => _dbContext.Movies.Any(m => m.Id == id);
 }
