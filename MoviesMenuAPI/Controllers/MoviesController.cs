@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MoviesMenuAPI.Contexts;
 using MoviesMenuAPI.Models;
 using MoviesMenuAPI.Services;
@@ -8,23 +7,19 @@ namespace MoviesMenuAPI.Controllers;
 
 [Route("api/movies")]
 [ApiController]
-public class MoviesController(MyBootcampDbContext dbContext, MovieService movieService) : ControllerBase
+public class MoviesController(MovieService movieService) : ControllerBase
 {
-    private readonly MyBootcampDbContext _dbContext = dbContext;
     private readonly MovieService _movieService = movieService;
 
     // GET: api/movies
     [HttpGet]
-    public IEnumerable<Movie> Get()
-    {
-        return _dbContext.Movies;
-    }
+    public IEnumerable<Movie> Get() => _movieService.ListAllMovies();
 
     // GET api/movies/1
     [HttpGet("{id}")]
     public ActionResult<Movie> Get(int id)
     {
-        var movieItem = _dbContext.Movies.Find(id);
+        var movieItem = _movieService.GetMovieById(id);
         if (movieItem == null)
             return NotFound();
         return movieItem;
@@ -55,11 +50,13 @@ public class MoviesController(MyBootcampDbContext dbContext, MovieService movieS
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var movie = _dbContext.Movies.Find(id);
-        if (movie == null) return BadRequest(string.Empty);
+        var movieToDelete = _movieService.GetMovieById(id);
 
-        _movieService.RemoveMovie(id);
+        if (movieToDelete == null)
+            return NotFound($"Movie with {id} not found");
 
-        return Ok($"Movie: {movie.Title} is deleted from the database successfully");
+        var result = _movieService.RemoveMovie(movieToDelete);
+
+        return Ok(result);
     }
 }

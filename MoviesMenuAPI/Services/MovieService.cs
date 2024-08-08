@@ -1,4 +1,5 @@
-﻿using MoviesMenuAPI.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using MoviesMenuAPI.Contexts;
 using MoviesMenuAPI.Models;
 
 namespace MoviesMenuAPI.Services;
@@ -6,29 +7,16 @@ namespace MoviesMenuAPI.Services;
 public class MovieService
 {
     private MyBootcampDbContext _dbContext = new();
-    private List<Movie> _movies = [];
 
-    public MovieService() => updateInitialMoviesList();
+    public Movie? GetMovieById(int id) => _dbContext.Movies.FirstOrDefault(m => m.Id == id);
 
-    public void SetDbContext(MyBootcampDbContext dbContext)
-    {
-        _dbContext = dbContext;
-        updateInitialMoviesList();
-    }
-
-    public void updateInitialMoviesList()
-    {
-        List<Movie> initialMovies = _dbContext.GetInitialMovies();
-        _movies = initialMovies;
-    }
-
-    public List<Movie> ListAllMovies() => _movies;
+    // adding AsNoTracking() will make EF Core not track this call (we dont need tracking here since listing all movies is read only, i.e. we don't need to modify it) this improves performance.
+    public List<Movie> ListAllMovies() => _dbContext.Movies.AsNoTracking().ToList();
 
     public string AddMovie(Movie movie)
     {
         _dbContext.Movies.Add(movie);
         _dbContext.SaveChanges();
-        updateInitialMoviesList();
 
         return $"{movie.Title} added to the database successfully!";
     }
@@ -46,29 +34,18 @@ public class MovieService
             movieEntity.Price = updatedMovie.Price;
 
             _dbContext.SaveChanges();
-            updateInitialMoviesList();
         }
 
         return $"{updatedMovie.Title} modified in the database successfully!";
     }
 
-    public string RemoveMovie(int id)
+    public string RemoveMovie(Movie movieToDelete)
     {
-        var movie = _dbContext.Movies.FirstOrDefault(m => m.Id == id);
-        if (movie != null)
-        {
-            _dbContext.Movies.Remove(movie);
-            _dbContext.SaveChanges();
-            updateInitialMoviesList();
+        _dbContext.Movies.Remove(movieToDelete);
+        _dbContext.SaveChanges();
 
-            return $"Movie: {movie.Title} is removed from the database successfully";
-        }
-        return $"Movie with {id} is not found";
+        return $"Movie: {movieToDelete.Title} is removed from the database successfully";
     }
 
-    public bool CheckMovieExists(int? id)
-    {
-        return _dbContext.Movies.Any(m => m.Id == id);
-    }
-
+    public bool CheckMovieExists(int? id) => _dbContext.Movies.Any(m => m.Id == id);
 }
